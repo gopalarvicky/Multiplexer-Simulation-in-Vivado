@@ -61,7 +61,7 @@ Truth Table
 Verilog Code
 
 4:1 MUX Gate-Level Implementation
-
+```verilog
 //module multi(a,b,c,d,s0,s1,y);
 input a,b,c,d,s0,s1;
 output y;
@@ -74,14 +74,14 @@ output y;
     and (w5,s1,s0,d);
     or (y,w2,w3,w4,w5);
 endmodule
-
+```
 output
 ![Screenshot 2024-09-19 140851](https://github.com/user-attachments/assets/7980f652-e116-4003-9e2f-b59bbcd939a7)
 
 
 
 4:1 MUX Data Flow Implementation
-
+```verilog
 module mul_data(
     output Y,        
     input I0, I1, I2, I3, 
@@ -94,14 +94,14 @@ module mul_data(
                (S1 & S0 & I3);     
 
 endmodule
-
+```
 
 output
 ![Screenshot 2024-09-19 142717](https://github.com/user-attachments/assets/dd5789e4-feee-4029-aa34-50f9f0a9aae7)
 
 
 4:1 MUX Behavioral Implementation
-
+```verilog
 //module mul_data(s, i, y);
 input [1:0] s;
 input [3:0] i;
@@ -118,12 +118,12 @@ begin
     endcase
 end
 endmodule
-
+```
 output
 ![Screenshot 2024-09-19 144057](https://github.com/user-attachments/assets/c7a05d2c-2c86-46a0-89ec-8540df377295)
 
 4:1 MUX Structural Implementation
-
+```verilog
 module mux_4to1 (a,b,c,d,S0,S1,Y);
 input a,b,c,d;
 input  S0, S1;       
@@ -133,99 +133,32 @@ assign Y = (S1 == 0 && S0 == 0) ? a :
 (S1 == 1 && S0 == 0) ? c :
 (S1 == 1 && S0 == 1) ? d:
 endmodule
+```
 output
 ![Screenshot 2024-09-26 215437](https://github.com/user-attachments/assets/8e59d7e7-77bc-4b1e-8eb0-565c98bfbf68)
 
 Testbench Implementation
-
-// mux4_to_1_tb.v
-`timescale 1ns / 1ps
-
-module mux4_to_1_tb;
-    // Inputs
-    reg A;
-    reg B;
-    reg C;
-    reg D;
-    reg S0;
-    reg S1;
-
-    // Outputs
-    wire Y_gate;
-    wire Y_dataflow;
-    wire Y_behavioral;
-    wire Y_structural;
-
-    // Instantiate the Gate-Level MUX
-    mux4_to_1_gate uut_gate (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_gate)
-    );
-
-    // Instantiate the Data Flow MUX
-    mux4_to_1_dataflow uut_dataflow (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_dataflow)
-    );
-
-    // Instantiate the Behavioral MUX
-    mux4_to_1_behavioral uut_behavioral (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_behavioral)
-    );
-
-    // Instantiate the Structural MUX
-    mux4_to_1_structural uut_structural (
-        .A(A),
-        .B(B),
-        .C(C),
-        .D(D),
-        .S0(S0),
-        .S1(S1),
-        .Y(Y_structural)
-    );
-
-    // Test vectors
-    initial begin
-        // Initialize Inputs
-        A = 0; B = 0; C = 0; D = 0; S0 = 0; S1 = 0;
-
-        // Apply test cases
-        #10 {S1, S0, A, B, C, D} = 6'b00_0000; // Y = A = 0
-        #10 {S1, S0, A, B, C, D} = 6'b00_0001; // Y = A = 1
-        #10 {S1, S0, A, B, C, D} = 6'b01_0010; // Y = B = 1
-        #10 {S1, S0, A, B, C, D} = 6'b10_0100; // Y = C = 1
-        #10 {S1, S0, A, B, C, D} = 6'b11_1000; // Y = D = 1
-        #10 {S1, S0, A, B, C, D} = 6'b01_1100; // Y = B = 1
-        #10 {S1, S0, A, B, C, D} = 6'b10_1010; // Y = C = 1
-        #10 {S1, S0, A, B, C, D} = 6'b11_0110; // Y = D = 1
-        #10 {S1, S0, A, B, C, D} = 6'b00_1111; // Y = A = 1
-        #10 $stop;
-    end
-
-    // Monitor the outputs
-    initial begin
-        $monitor("Time=%0t | S1=%b S0=%b | Inputs: A=%b B=%b C=%b D=%b | Y_gate=%b | Y_dataflow=%b | Y_behavioral=%b | Y_structural=%b",
-                 $time, S1, S0, A, B, C, D, Y_gate, Y_dataflow, Y_behavioral, Y_structural);
-    end
+```verilog
+module mux4_1tb;
+reg [3:0]i;
+reg [1:0]s;
+wire y;
+mux4_1 dut(i,s,y);
+initial
+begin
+i=4'b1100;
+s=2'b00;
+#100
+s=2'b01;
+#100
+s=2'b10;
+#100
+s=2'b11;
+#100
+$display("no value assigned");
+end
 endmodule
-
-
+```
 Sample Output
 
 Time=0 | S1=0 S0=0 | Inputs: A=0 B=0 C=0 D=0 | Y_gate=0 | Y_dataflow=0 | Y_behavioral=0 | Y_structural=0
@@ -234,6 +167,8 @@ Time=20 | S1=0 S0=0 | Inputs: A=0 B=0 C=0 D=1 | Y_gate=0 | Y_dataflow=0 | Y_beha
 Time=30 | S1=0 S0=1 | Inputs: A=0 B=0 C=0 D=1 | Y_gate=0 | Y_dataflow=0 | Y_behavioral=0 | Y_structural=0
 Time=40 | S1=1 S0=0 | Inputs: A=0 B=0 C=0 D=1 | Y_gate=0 | Y_dataflow=0 | Y_behavioral=0 | Y_structural=0
 ...
+output
+![Screenshot 2024-10-16 224000](https://github.com/user-attachments/assets/1088eb69-c44d-4f82-bd3e-3124cea1a33b)
 
 Conclusion:
 
